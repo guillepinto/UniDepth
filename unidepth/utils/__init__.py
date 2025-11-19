@@ -10,3 +10,4 @@ from .geometric import spherical_zbuffer_to_euclidean, unproject_points
 from .misc import (format_seconds, get_params, identity, recursive_index,
                    remove_padding, to_cpu)
 from .visualization import colorize, image_grid, log_train_artifacts
+from .metric import eval_depth
