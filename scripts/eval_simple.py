@@ -9,18 +9,18 @@ from unidepth.utils import eval_depth
 from unidepth.utils.visualization import colorize, save_file_ply
 
 scenes = {
-    'Pat11_Step1': {'label_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_label.npz',
-    'pca_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_pca.png'},
-    'Path2_Step1': {'label_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path2_Step1_LWHSI1_collect0_DistStA_label.npz',
-    'pca_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path2_Step1_LWHSI1_collect0_DistStA_pca.png'},
-    'Path6_Step1': {'label_path':'/teamspace/s3_folders/ihdataset/IHTest_202104_Path6_Step1_LWHSI1_collect0_DistStA_label.npz',
-    'pca_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path6_Step1_LWHSI1_collect0_DistStA_pca.png'},
-    'Path19_Step1': {'label_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path19_Step1_LWHSI1_collect0_DistStA_label.npz',
-    'pca_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path19_Step1_LWHSI1_collect0_DistStA_pca.png'},
-    'Path29_Step1': {'label_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path29_Step1_LWHSI1_collect0_DistStA_label.npz',
-    'pca_path': '/teamspace/s3_folders/ihdataset/IHTest_202104_Path29_Step1_LWHSI1_collect0_DistStA_pca.png'},
-    'Path4_Step22': {'label_path': '/teamspace/s3_folders/ihdataset/IHTest_202108_Path4_Step22_LWHSI1_DistStA_label.npz',
-    'pca_path': '/teamspace/s3_folders/ihdataset/IHTest_202108_Path4_Step22_LWHSI1_DistStA_pca.png'},
+    'Pat11_Step1': {'label_path': 'IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_label.npz',
+    'pca_path': 'IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_pca.png'},
+    'Path2_Step1': {'label_path': 'IHTest_202104_Path2_Step1_LWHSI1_collect0_DistStA_label.npz',
+    'pca_path': 'IHTest_202104_Path2_Step1_LWHSI1_collect0_DistStA_pca.png'},
+    'Path6_Step1': {'label_path':'IHTest_202104_Path6_Step1_LWHSI1_collect0_DistStA_label.npz',
+    'pca_path': 'IHTest_202104_Path6_Step1_LWHSI1_collect0_DistStA_pca.png'},
+    'Path19_Step1': {'label_path': 'IHTest_202104_Path19_Step1_LWHSI1_collect0_DistStA_label.npz',
+    'pca_path': 'IHTest_202104_Path19_Step1_LWHSI1_collect0_DistStA_pca.png'},
+    'Path29_Step1': {'label_path': 'IHTest_202104_Path29_Step1_LWHSI1_collect0_DistStA_label.npz',
+    'pca_path': 'IHTest_202104_Path29_Step1_LWHSI1_collect0_DistStA_pca.png'},
+    'Path4_Step22': {'label_path': 'IHTest_202108_Path4_Step22_LWHSI1_DistStA_label.npz',
+    'pca_path': 'IHTest_202108_Path4_Step22_LWHSI1_DistStA_pca.png'},
     # 'Path11_Step1': {'heatcube_path': '/teamspace/uploads/ihdataset/IHTest_202104_DistStA/Path11_DistStA/Path11_Step1_DistStA/IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_wavelength_corrected_m0p157_destriped_resampled.npz',
     # 'label_path': '/teamspace/uploads/ihdataset/IHTest_202104_DistStA/Path11_DistStA/Path11_Step1_DistStA/IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_label.npz',
     # 'pca_path': '/teamspace/uploads/ihdataset/IHTest_202104_DistStA/Path11_DistStA/Path11_Step1_DistStA/IHTest_202104_Path11_Step1_LWHSI1_collect0_DistStA_pca.png'},
@@ -159,6 +159,9 @@ if __name__ == '__main__':
         "--model-type", type=str, default="unidepth-v1", 
         help="Type of the model to use.", choices=["unidepth-v1", "unidepth-v2", "unidepth-v2old"]
     )
+    parser.add_argument(
+        "--data-root", type=str, default="", help="Root directory for the dataset."
+    )
     args = parser.parse_args()
 
     print("Torch version:", torch.__version__)
@@ -185,8 +188,8 @@ if __name__ == '__main__':
         args.output = f'outputs_{args.model_type.lower()}'
 
     for scene in scenes.values():
-        args.input = scene['pca_path']
-        args.gt = scene['label_path']
+        args.input = os.path.join(args.data_root, scene['pca_path'])
+        args.gt = os.path.join(args.data_root, scene['label_path'])
         metrics = eval_image(model, args)
         for key in mean_metrics.keys():
             mean_metrics[key] += metrics[key]
